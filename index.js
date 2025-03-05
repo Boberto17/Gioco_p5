@@ -27,8 +27,10 @@ window.pop = () => window.drawingContext.restore();
 window.translate = (x, y) => window.drawingContext.translate(x, y);
 window.rotate = (angle) => window.drawingContext.rotate(angle);
 
-window.width = 800;
-window.height = 600;
+// Imposta le dimensioni del canvas in base alle dimensioni della finestra
+window.width = window.innerWidth;
+window.height = window.innerHeight;
+
 window.mouseX = 0;
 window.mouseY = 0;
 
@@ -41,22 +43,6 @@ window.mouseIsPressed = false;
 window.addEventListener('mousedown', () => window.mouseIsPressed = true);
 window.addEventListener('mouseup', () => window.mouseIsPressed = false);
 
-window.hoveredTile = null;
-
-window.addEventListener('mousemove', (e) => {
-  window.mouseX = e.offsetX;
-  window.mouseY = e.offsetY;
-
-  // Trova il tile corrente sotto il mouse
-  let tileX = Math.floor(mouseX / window.tileSize) * window.tileSize;
-  let tileY = Math.floor(mouseY / window.tileSize) * window.tileSize;
-  
-  // Controlla se il tile corrente è costruibile
-  window.hoveredTile = window.isBuildable(tileX + window.tileSize/2, tileY + window.tileSize/2) 
-    ? { x: tileX, y: tileY } 
-    : null;
-});
-
 window.millis = () => Date.now();
 window.sqrt = Math.sqrt;
 window.atan2 = Math.atan2;
@@ -65,3 +51,11 @@ window.setup = setup;
 window.draw = draw;
 window.keyPressed = keyPressed;
 window.mousePressed = mousePressed;
+
+// Aggiorna le dimensioni del canvas quando la finestra viene ridimensionata
+window.addEventListener('resize', () => {
+  window.width = window.innerWidth;
+  window.height = window.innerHeight;
+  resizeCanvas(window.width, window.height); // Ridimensiona il canvas
+  setup(); // Ricalcola la mappa e il percorso
+});

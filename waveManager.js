@@ -9,11 +9,12 @@ export function startWave(waves, currentWave, enemies, path) {
         setTimeout(() => {
           enemies.push(new Enemy(path[0].x, path[0].y, enemyGroup.type));
           console.log(`Nemico generato: ${enemyGroup.type}`);
-        }, i * 1000); // Genera un nemico ogni secondo
+        }, i * 2000); // Genera un nemico ogni 2 secondi (puoi regolare questo valore)
       }
     }
   }
 }
+
 export function nextLevel(currentLevel, levels, startGame, gameState) {
   currentLevel++;
   if (currentLevel < levels.length) {
