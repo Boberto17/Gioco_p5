@@ -3,31 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tower Defense Game</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <script type="module" src="index.js"></script>
+    <title>Tower Defense</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
             margin: 0;
             padding: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #game-container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            background-color: #4a752c;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #ui-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+        #ui-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px black;
+        }
+        .tower-button {
+            display: inline-block;
+            margin: 5px;
+            padding: 5px;
+            background-color: #555;
+            color: white;
+            border: 2px solid #777;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 12px;
+        }
+        .tower-button:hover {
+            background-color: #666;
+            transform: scale(1.05);
+        }
+        .tower-button.selected {
+            background-color: #996;
+            border-color: yellow;
+        }
+        .screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            height: 100vh;
-            overflow: hidden; /* Nasconde la barra di scorrimento */
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 24px;
+            display: none;
         }
-        canvas {
-            border: 1px solid #ccc;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 100%; /* Occupa tutta la larghezza disponibile */
-            height: 100%; /* Occupa tutta l'altezza disponibile */
+        .screen button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 20px;
+            background-color: #555;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .screen button:hover {
+            background-color: #777;
+            transform: scale(1.05);
+        }
+        .difficulty-button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #555;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .difficulty-button:hover {
+            background-color: #777;
+        }
+        #next-wave-info {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
         }
     </style>
 </head>
 <body>
-    <div id="sketch-container"></div>
+    <div id="game-container">
+        <canvas id="canvas" width="800" height="600"></canvas>
+        <canvas id="ui-canvas" width="800" height="600"></canvas>
+        
+        <div id="ui-container">
+            <div id="stats">
+                Oro: <span id="gold">100</span> | 
+                Vite: <span id="lives">10</span> | 
+                Ondata: <span id="wave">0</span> | 
+                Punteggio: <span id="score">0</span>
+            </div>
+            <div id="tower-buttons">
+                <div class="tower-button" data-tower="base">Base<br>20 oro</div>
+                <div class="tower-button" data-tower="fire">Fuoco<br>40 oro</div>
+                <div class="tower-button" data-tower="ice">Ghiaccio<br>35 oro</div>
+                <div class="tower-button" data-tower="electric">Elettrica<br>45 oro</div>
+                <div class="tower-button" data-tower="sniper">Cecchino<br>50 oro</div>
+            </div>
+            <button id="start-wave-button">Inizia Ondata</button>
+        </div>
+        
+        <div id="next-wave-info">
+            Prossima ondata: In attesa
+        </div>
+        
+        <!-- Schermate di gioco -->
+        <div id="start-screen" class="screen">
+            <h1>Tower Defense</h1>
+            <h2>Scegli la difficoltà</h2>
+            <div id="difficulty-buttons">
+                <button class="difficulty-button" data-difficulty="easy">Facile</button>
+                <button class="difficulty-button" data-difficulty="medium">Medio</button>
+                <button class="difficulty-button" data-difficulty="hard">Difficile</button>
+            </div>
+        </div>
+        
+        <div id="pause-screen" class="screen">
+            <h1>Pausa</h1>
+            <button id="resume-button">Riprendi</button>
+            <button id="restart-button">Ricomincia</button>
+            <button id="menu-button">Menu Principale</button>
+        </div>
+        
+        <div id="game-over-screen" class="screen">
+            <h1>Game Over</h1>
+            <p>Punteggio finale: <span id="final-score">0</span></p>
+            <button id="retry-button">Riprova</button>
+            <button id="main-menu-button">Menu Principale</button>
+        </div>
+        
+        <div id="victory-screen" class="screen">
+            <h1>Hai Vinto!</h1>
+            <p>Punteggio finale: <span id="victory-score">0</span></p>
+            <button id="victory-menu-button">Menu Principale</button>
+        </div>
+    </div>
+
+    <script type="module" src="scripts/index.js"></script>
 </body>
 </html>
