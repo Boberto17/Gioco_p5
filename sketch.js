@@ -1179,7 +1179,7 @@ class Platform {
   startDisappearing() {
     if (this.type === platformTypes.TEMPORARY && this.disappearTimer === 0 && this.reappearTimer === 0) {
       // Aumentato il timer a 5 secondi (300 frames a 60 fps)
-      this.disappearTimer = 300;
+      this.disappearTimer = 180;
     }
   }
 
