@@ -363,7 +363,7 @@ function drawGameplay() {
     platforms[i].show();
   }
 
-  if (player.y > -cameraPosY + height + 50) {
+  if (player.y > -cameraPosY + height + 50 || player.y < 0) {
     gameState = "GAME_OVER";
   }
 
