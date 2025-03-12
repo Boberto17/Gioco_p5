@@ -253,15 +253,12 @@ function drawRules() {
   let rulesX = width / 5;
   let rulesY = 120;
 
-  text("Come giocare:", rulesX, rulesY);
+  text("  Come giocare:", rulesX, rulesY);
   text("- Premi SPAZIO per saltare quando sei su una piattaforma", rulesX, rulesY + 40);
-  text("- Tieni premuto SPAZIO per caricare un salto più potente", rulesX, rulesY + 70);
+  text("- Tieni premuto SPAZIO per caricare un salto piu' potente", rulesX, rulesY + 70);
   text("- Muoviti con W, A, S, D o le FRECCE DIREZIONALI", rulesX, rulesY + 100);
   text("- Salta in direzioni diverse tenendo premuto un tasto direzionale", rulesX, rulesY + 130);
-  text("- In alternativa, clicca e tieni premuto con il mouse per determinare", rulesX, rulesY + 160);
-  text("  la direzione e la potenza del salto", rulesX, rulesY + 190);
-  text("- Segui la freccia che indica direzione e potenza del salto", rulesX, rulesY + 220);
-  text("- Sali il più in alto possibile senza cadere fuori dallo schermo", rulesX, rulesY + 250);
+  text("- Sali il piu' in alto possibile senza cadere fuori dallo schermo", rulesX, rulesY + 250);
 
   text("Tipi di piattaforme:", rulesX, rulesY + 300);
 
@@ -279,7 +276,7 @@ function drawRules() {
 
   image(platformTeleport, rulesX, rulesY + 420, 20, 20);
   fill(255);
-  text("  Marrone: Piattaforme di teletrasporto (ti teletrasportano alla piattaforma più vicina)", rulesX + 30, rulesY + 437);
+  text("  Marrone: Piattaforme di teletrasporto (ti teletrasportano alla piattaforma piu' vicina)", rulesX + 30, rulesY + 437);
 
   drawButton("TORNA AL MENU", width / 2, height - 80, function () {
     gameState = "MENU";
@@ -363,7 +360,7 @@ function drawGameplay() {
     platforms[i].show();
   }
 
-  if (player.y > -cameraPosY + height + 50 || player.y < 0) {
+  if (player.y > -cameraPosY + height + 50) {
     gameState = "GAME_OVER";
   }
 
@@ -587,7 +584,7 @@ function drawJumpIndicator() {
 }
 
 function drawGameOver() {
-  background(0, 0, 0, 150);
+  background(255, 0, 0, 150);
   fill(255);
   textSize(64);
   textAlign(CENTER, CENTER);
