@@ -1,43 +1,59 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
+  <!-- Definizione del set di caratteri e della viewport per la responsività -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Titolo della pagina -->
   <title>Slime adventure</title>
+  
+  <!-- Stili CSS per la pagina -->
   <style>
+    /* Rimuove margini e padding predefiniti e centra il contenuto verticalmente e orizzontalmente */
     body {
       margin: 0;
       padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      background-color: #222;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
+      height: 100vh; /* Altezza della viewport */
+      background-color: #222; /* Colore di sfondo scuro */
+      overflow: hidden; /* Nasconde lo scroll */
+      font-family: Arial, sans-serif; /* Font di base */
     }
+    
+    /* Stile per il canvas (area di disegno del gioco) */
     canvas {
       display: block;
-      border: 2px solid #333;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      border: 2px solid #333; /* Bordo intorno al canvas */
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Ombreggiatura per un effetto 3D */
     }
+    
+    /* Contenitore del gioco, posizionato relativamente per eventuali elementi aggiuntivi */
     .game-container {
       position: relative;
     }
+    
+    /* Media query per adattare il canvas su schermi più piccoli */
     @media (max-width: 800px) {
       canvas {
-        width: 100%;
-        height: auto;
+        width: 100%; /* Larghezza al 100% del contenitore */
+        height: auto; /* Altezza automatica per mantenere le proporzioni */
       }
     }
   </style>
-  <!-- Carica la libreria p5.js -->
+  
+  <!-- Inclusione della libreria p5.js per la creazione di grafica e animazioni -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
-  <!-- Carica il file con il codice del gioco -->
+  
+  <!-- Inclusione del file JavaScript contenente il codice del gioco -->
   <script src="sketch.js"></script>
 </head>
 <body>
+  <!-- Contenitore principale per il gioco -->
   <div class="game-container">
+    <!-- Il canvas verrà generato dinamicamente da p5.js -->
   </div>
 </body>
 </html>

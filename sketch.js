@@ -24,23 +24,6 @@ let previousGameState = null; // Stato precedente del gioco
 let missedTrophy = false; // Flag per indicare se il trofeo è stato mancato
 let trophyRegenerationDistance = 1000; // Distanza dopo la quale rigenerare il trofeo
 
-// Precaricamento delle risorse
-function preload() {
-  slimeIdle = loadImage('assets/slimeCamminata.gif');
-  slimeWalk = loadImage('assets/slimeCamminata.gif');
-  slimeJump = loadImage('assets/slimeSalto.gif');
-  platformNormal = loadImage('assets/piattaforme0.png');
-  platformSlippery = loadImage('assets/piattaforme1.png');
-  platformTeleport = loadImage('assets/piattaforme2.png');
-  platformTemporary = loadImage('assets/piattaforme3.png');
-  levels[0].background = loadImage('assets/mappaForesta.png');
-  levels[1].background = loadImage('assets/mappaGhiaccio.png');
-  levels[2].background = loadImage('assets/mappaCaverna.png');
-  levels[3].background = loadImage('assets/mappaCielo.png');
-  Font = loadFont('assets/KnightWarrior.otf');
-  trophyImage = loadImage('assets/trophy.png');
-}
-
 // Oggetto per memorizzare lo stato dei tasti
 let keys = {
   left: false,
@@ -74,6 +57,23 @@ let levels = [
   { name: "Caverna", background: null, platformTypes: [platformTypes.NORMAL, platformTypes.SLIPPERY, platformTypes.TEMPORARY] },
   { name: "Cielo", background: null, platformTypes: [platformTypes.NORMAL, platformTypes.SLIPPERY, platformTypes.TEMPORARY, platformTypes.TELEPORT] }
 ];
+
+// Precaricamento delle risorse
+function preload() {
+  slimeIdle = loadImage('assets/slimeCamminata.gif');
+  slimeWalk = loadImage('assets/slimeCamminata.gif');
+  slimeJump = loadImage('assets/slimeSalto.gif');
+  platformNormal = loadImage('assets/piattaforme0.png');
+  platformSlippery = loadImage('assets/piattaforme1.png');
+  platformTeleport = loadImage('assets/piattaforme2.png');
+  platformTemporary = loadImage('assets/piattaforme3.png');
+  levels[0].background = loadImage('assets/mappaForesta.png');
+  levels[1].background = loadImage('assets/mappaGhiaccio.png');
+  levels[2].background = loadImage('assets/mappaCaverna.png');
+  levels[3].background = loadImage('assets/mappaCielo.png');
+  Font = loadFont('assets/KnightWarrior.otf');
+  trophyImage = loadImage('assets/trophy.png');
+}
 
 // Funzione di setup per inizializzare il gioco
 function setup() {
@@ -478,18 +478,6 @@ function updateTrophy() {
   }
 }
 
-  // Genera il trofeo solo se siamo nell'ultimo livello e abbiamo superato il punteggio minimo
-  if (currentLevel === levels.length - 1 && score > targetScore - 100 && trophy === null) {
-    trophy = {
-      x: width / 2 - 40,
-      y: highestPlatformY - 250,
-      width: 80,
-      height: 80,
-      floatOffset: 0,
-      floatSpeed: 0.05
-    };
-  }
-
 // Funzione per controllare la collisione con il trofeo
 function playerCollidesWithTrophy() {
   if (!trophy) return false;
@@ -502,6 +490,7 @@ function playerCollidesWithTrophy() {
   );
 }
 
+// Funzione per disegnare la schermata di vittoria
 function drawGameWon() {
   background(0, 150, 0, 150);
   fill(255);
@@ -524,6 +513,7 @@ function drawGameWon() {
   textAlign(LEFT, BASELINE);
 }
 
+// Funzione per aggiornare la direzione del salto
 function updateJumpDirection() {
   jumpDirection = { x: 0, y: -1 };
 
@@ -555,6 +545,7 @@ function updateJumpDirection() {
   jumpDirection.y /= magnitude;
 }
 
+// Funzione per disegnare l'indicatore di salto
 function drawJumpIndicator() {
   let arrowLength = map(jumpPower, 0, maxJumpPower, 20, 80);
 
@@ -583,6 +574,7 @@ function drawJumpIndicator() {
   stroke(0);
 }
 
+// Funzione per disegnare la schermata di game over
 function drawGameOver() {
   background(255, 0, 0, 150);
   fill(255);
@@ -605,6 +597,7 @@ function drawGameOver() {
   textAlign(LEFT, BASELINE);
 }
 
+// Funzione per disegnare un pulsante
 function drawButton(label, x, y, callback) {
   let buttonWidth = 250;
   let buttonHeight = 60;
@@ -629,6 +622,7 @@ function drawButton(label, x, y, callback) {
   text(label, x, y);
 }
 
+// Funzione chiamata quando il mouse viene rilasciato
 function mouseReleased() {
   if (lastClickedButton) {
     lastClickedButton();
@@ -640,6 +634,7 @@ function mouseReleased() {
   }
 }
 
+// Funzione chiamata quando un tasto viene premuto
 function keyPressed() {
   if (keyCode === 65 || keyCode === LEFT_ARROW) {
     keys.left = true;
@@ -665,6 +660,7 @@ function keyPressed() {
   }
 }
 
+// Funzione chiamata quando un tasto viene rilasciato
 function keyReleased() {
   if (keyCode === 65 || keyCode === LEFT_ARROW) {
     keys.left = false;
@@ -683,6 +679,7 @@ function keyReleased() {
   }
 }
 
+// Funzione per eseguire il salto
 function executeJump() {
   player.vx = jumpDirection.x * jumpPower;
   player.vy = jumpDirection.y * jumpPower;
@@ -691,151 +688,125 @@ function executeJump() {
   jumpPower = 0;
   player.jumpCooldown = 0;
 
-    platformsJumped++;
-    
-    // Controlla se è ora di passare al livello successivo
-    if (score >= targetScore && currentLevel < levels.length - 1) {
-      currentLevel++;
-      targetScore += 300;
-    }
+  platformsJumped++;
+  
+  // Controlla se è ora di passare al livello successivo
+  if (score >= targetScore && currentLevel < levels.length - 1) {
+    currentLevel++;
+    targetScore += 300;
   }
+}
 
-  function generatePlatform(y) {
-    // Parametri per il salto del giocatore
-    const jumpPowerFactor = 0.75; 
-    const maxJumpPower = 20;
-    const effectiveJumpPower = maxJumpPower * jumpPowerFactor;
-    
-    // Dimensioni delle piattaforme
-    const minPlatformWidth = 100;
-    const maxPlatformWidth = 200;
-    
-    // Piattaforma iniziale (la prima del gioco)
-    if (platforms.length === 0) {
-      let platformWidth = random(minPlatformWidth, maxPlatformWidth);
-      let platformX = width / 2 - platformWidth / 2;
-      platforms.push(new Platform(platformX, y, platformWidth, 30, platformTypes.NORMAL));
-      lastPlatformY = y;
-      lastPlatformHorizontalPosition = "center";
-      return;
-    }
-    
-    // Trova l'ultima piattaforma generata
-    let referencePlatform = null;
-    let minVerticalDistance = Infinity;
-    
-    for (let platform of platforms) {
-      let verticalDistance = Math.abs(platform.y - lastPlatformY);
-      if (verticalDistance < minVerticalDistance) {
-        minVerticalDistance = verticalDistance;
-        referencePlatform = platform;
-      }
-    }
-    
-    // Calcola la distanza verticale dalla piattaforma di riferimento
-    let verticalDistance = referencePlatform.y - y;
-    
-    // Calcola il massimo salto orizzontale possibile a questa altezza
-    let jumpVerticalVelocity = effectiveJumpPower * 0.8;
-    let jumpHorizontalVelocity = effectiveJumpPower * 0.6;
-    
-    // Calcola la distanza orizzontale massima che può essere coperta con questo salto
-    let maxHorizontalDistance = (jumpHorizontalVelocity * verticalDistance) / jumpVerticalVelocity;
-    
-    // Assicuriamoci che la distanza sia ragionevole ma sfrutti meglio lo schermo
-    maxHorizontalDistance = constrain(maxHorizontalDistance, width * 0.2, width * 0.8);
-    
-    // Genera una nuova piattaforma
+// Funzione per generare una nuova piattaforma
+function generatePlatform(y) {
+  const jumpPowerFactor = 0.75; 
+  const maxJumpPower = 20;
+  const effectiveJumpPower = maxJumpPower * jumpPowerFactor;
+  
+  const minPlatformWidth = 100;
+  const maxPlatformWidth = 200;
+  
+  if (platforms.length === 0) {
     let platformWidth = random(minPlatformWidth, maxPlatformWidth);
-    
-    // Dividi lo schermo in tre zone: sinistra, centro, destra
-    let zoneWidth = width / 3;
-    
-    // Scegli in quale zona posizionare la piattaforma, evitando la stessa zona dell'ultima piattaforma
-    let zone;
-    if (lastPlatformHorizontalPosition === "left") {
-      // Se l'ultima era a sinistra, vai al centro o a destra
-      zone = random() < 0.5 ? "center" : "right";
-    } else if (lastPlatformHorizontalPosition === "right") {
-      // Se l'ultima era a destra, vai al centro o a sinistra
-      zone = random() < 0.5 ? "center" : "left";
-    } else {
-      // Se l'ultima era al centro, vai a sinistra o a destra
-      zone = random() < 0.5 ? "left" : "right";
-    }
-    
-    // Calcola la posizione x in base alla zona scelta
-    let platformX;
-    let refCenterX = referencePlatform.x + referencePlatform.width / 2;
-    
-    if (zone === "left") {
-      // Zona sinistra (primo terzo dello schermo)
-      platformX = random(50, zoneWidth - platformWidth - 50);
-      lastPlatformHorizontalPosition = "left";
-    } else if (zone === "right") {
-      // Zona destra (ultimo terzo dello schermo)
-      platformX = random(width - zoneWidth + 50, width - platformWidth - 50);
-      lastPlatformHorizontalPosition = "right";
-    } else {
-      // Zona centrale
-      platformX = random(zoneWidth + 50, 2 * zoneWidth - platformWidth - 50);
-      lastPlatformHorizontalPosition = "center";
-    }
-    
-    // Assicuriamoci che la piattaforma sia raggiungibile
-    // Calcola la distanza orizzontale tra la vecchia e la nuova piattaforma
-    let horizontalDistance = Math.abs(platformX + platformWidth/2 - refCenterX);
-    
-    // Se la distanza è troppo grande in relazione al salto massimo possibile,
-    // riposiziona la piattaforma più vicina
-    if (horizontalDistance > maxHorizontalDistance) {
-      // Calcola una nuova posizione che sia raggiungibile
-      let direction = platformX > refCenterX ? 1 : -1; // direzione destra o sinistra
-      let maxReachX = refCenterX + direction * maxHorizontalDistance;
-      
-      // Calcola la nuova posizione x considerando la larghezza della piattaforma
-      if (direction > 0) {
-        platformX = maxReachX - platformWidth/2;
-      } else {
-        platformX = maxReachX - platformWidth/2;
-      }
-    }
-    
-    // Assicurati che la piattaforma rimanga all'interno dello schermo
-    platformX = constrain(platformX, 50, width - platformWidth - 50);
-    
-    // Scegli un tipo di piattaforma in base al livello corrente
-    let availableTypes = levels[currentLevel].platformTypes;
-    let type = availableTypes[floor(random(availableTypes.length))];
-    
-    // Evita piattaforme teleport consecutive o troppo vicine
-    if (type === platformTypes.TELEPORT) {
-      let hasTeleportNearby = false;
-      for (let platform of platforms) {
-        if (platform.type === platformTypes.TELEPORT) {
-          let distanceToOtherTeleport = Math.abs(y - platform.y);
-          if (distanceToOtherTeleport < 400) {
-            hasTeleportNearby = true;
-            break;
-          }
-        }
-      }
-      
-      if (hasTeleportNearby) {
-        type = platformTypes.NORMAL;
-      }
-    }
-    
-    // Crea la nuova piattaforma
-    platforms.push(new Platform(platformX, y, platformWidth, 30, type));
+    let platformX = width / 2 - platformWidth / 2;
+    platforms.push(new Platform(platformX, y, platformWidth, 30, platformTypes.NORMAL));
     lastPlatformY = y;
+    lastPlatformHorizontalPosition = "center";
+    return;
   }
   
+  let referencePlatform = null;
+  let minVerticalDistance = Infinity;
+  
+  for (let platform of platforms) {
+    let verticalDistance = Math.abs(platform.y - lastPlatformY);
+    if (verticalDistance < minVerticalDistance) {
+      minVerticalDistance = verticalDistance;
+      referencePlatform = platform;
+    }
+  }
+  
+  let verticalDistance = referencePlatform.y - y;
+  
+  let jumpVerticalVelocity = effectiveJumpPower * 0.8;
+  let jumpHorizontalVelocity = effectiveJumpPower * 0.6;
+  
+  let maxHorizontalDistance = (jumpHorizontalVelocity * verticalDistance) / jumpVerticalVelocity;
+  
+  maxHorizontalDistance = constrain(maxHorizontalDistance, width * 0.2, width * 0.8);
+  
+  let platformWidth = random(minPlatformWidth, maxPlatformWidth);
+  
+  let zoneWidth = width / 3;
+  
+  let zone;
+  if (lastPlatformHorizontalPosition === "left") {
+    zone = random() < 0.5 ? "center" : "right";
+  } else if (lastPlatformHorizontalPosition === "right") {
+    zone = random() < 0.5 ? "center" : "left";
+  } else {
+    zone = random() < 0.5 ? "left" : "right";
+  }
+  
+  let platformX;
+  let refCenterX = referencePlatform.x + referencePlatform.width / 2;
+  
+  if (zone === "left") {
+    platformX = random(50, zoneWidth - platformWidth - 50);
+    lastPlatformHorizontalPosition = "left";
+  } else if (zone === "right") {
+    platformX = random(width - zoneWidth + 50, width - platformWidth - 50);
+    lastPlatformHorizontalPosition = "right";
+  } else {
+    platformX = random(zoneWidth + 50, 2 * zoneWidth - platformWidth - 50);
+    lastPlatformHorizontalPosition = "center";
+  }
+  
+  let horizontalDistance = Math.abs(platformX + platformWidth/2 - refCenterX);
+  
+  if (horizontalDistance > maxHorizontalDistance) {
+    let direction = platformX > refCenterX ? 1 : -1;
+    let maxReachX = refCenterX + direction * maxHorizontalDistance;
+    
+    if (direction > 0) {
+      platformX = maxReachX - platformWidth/2;
+    } else {
+      platformX = maxReachX - platformWidth/2;
+    }
+  }
+  
+  platformX = constrain(platformX, 50, width - platformWidth - 50);
+  
+  let availableTypes = levels[currentLevel].platformTypes;
+  let type = availableTypes[floor(random(availableTypes.length))];
+  
+  if (type === platformTypes.TELEPORT) {
+    let hasTeleportNearby = false;
+    for (let platform of platforms) {
+      if (platform.type === platformTypes.TELEPORT) {
+        let distanceToOtherTeleport = Math.abs(y - platform.y);
+        if (distanceToOtherTeleport < 400) {
+          hasTeleportNearby = true;
+          break;
+        }
+      }
+    }
+    
+    if (hasTeleportNearby) {
+      type = platformTypes.NORMAL;
+    }
+  }
+  
+  platforms.push(new Platform(platformX, y, platformWidth, 30, type));
+  lastPlatformY = y;
+}
+
+// Classe Player
 class Player {
   constructor(x, y) {
     this.x = x;
     this.y = y;
-    this.initialY = y; // Aggiunto per il calcolo del punteggio
+    this.initialY = y;
     this.minY = y;
     this.width = 75;
     this.height = 100;
@@ -886,61 +857,44 @@ class Player {
     }
 
     // Controllo del movimento in aria
-// Controllo del movimento in aria
-if (!this.grounded && !jumpCharging) {  // Aggiunta la condizione !jumpCharging
-  // Permette movimenti laterali anche mentre si è in aria, ma con meno controllo
-  if (keys.left) {
-    this.vx -= 0.3; // Accelerazione più lenta in aria
-    this.vx = max(this.vx, -moveSpeed * 0.8); // Velocità massima ridotta in aria
-    this.direction = -1;
-  } else if (keys.right) {
-    this.vx += 0.3; // Accelerazione più lenta in aria
-    this.vx = min(this.vx, moveSpeed * 0.8); // Velocità massima ridotta in aria
-    this.direction = 1;
-  }
-  
-  // Opzionale: aggiunta di un minimo controllo verticale
-  if (keys.up && this.vy > 0) {
-    // Leggero effetto di galleggiamento quando si preme il tasto su durante la discesa
-    this.vy *= 0.98;
-  } else if (keys.down && this.vy < 0) {
-    // Discesa più rapida quando si preme il tasto giù durante la salita
-    this.vy *= 1.02;
-  }
-}
+    if (!this.grounded && !jumpCharging) {
+      if (keys.left) {
+        this.vx -= 0.3;
+        this.vx = max(this.vx, -moveSpeed * 0.8);
+        this.direction = -1;
+      } else if (keys.right) {
+        this.vx += 0.3;
+        this.vx = min(this.vx, moveSpeed * 0.8);
+        this.direction = 1;
+      }
+      
+      if (keys.up && this.vy > 0) {
+        this.vy *= 0.98;
+      } else if (keys.down && this.vy < 0) {
+        this.vy *= 1.02;
+      }
+    }
 
     // Gestione dell'attrito in base al tipo di piattaforma
     if (this.grounded) {
       if (this.onSlippery) {
-        // Nuovo comportamento per piattaforme scivolose:
         if (keys.down) {
-          // Frenata quando si preme il tasto verso il basso
-          this.vx *= 0.7; // Frena rapidamente
-          
-          // Effetto visivo opzionale per la frenata (puoi scegliere se implementarlo)
-          if (Math.abs(this.vx) > 1) {
-            // Qui potresti aggiungere un effetto particellare o un'animazione di frenata
-          }
+          this.vx *= 0.7;
         } else if (Math.abs(this.vx) > 0.5 && !keys.left && !keys.right) {
-          // Scivolamento normale quando non si frena e non ci sono input direzionali
-          this.vx *= 0.95; // Attrito leggero quando si scivola senza input
+          this.vx *= 0.95;
         } else {
-          // Movimento più veloce quando si premono i tasti direzionali
-          // MODIFICA QUI: aggiungi la condizione !jumpCharging
           if (keys.left && !jumpCharging) {
-            this.vx = -moveSpeed * 1.3; // 30% più veloce sulle piattaforme scivolose
+            this.vx = -moveSpeed * 1.3;
             this.direction = -1;
           } else if (keys.right && !jumpCharging) {
-            this.vx = moveSpeed * 1.3; // 30% più veloce sulle piattaforme scivolose
+            this.vx = moveSpeed * 1.3;
             this.direction = 1;
           } else {
-            // Se non ci sono input o stiamo caricando il salto, ferma il movimento gradualmente
             this.vx *= 0.8;
           }
         }
       } else {
-        // Comportamento normale per le altre piattaforme
-        this.vx *= 0.8; // Attrito normale
+        this.vx *= 0.8;
       }
     }
 
@@ -966,7 +920,6 @@ if (!this.grounded && !jumpCharging) {  // Aggiunta la condizione !jumpCharging
             } else if (platform.type === platformTypes.TEMPORARY) {
               platform.startDisappearing();
             } else if (platform.type === platformTypes.TELEPORT && this.teleportCooldown === 0) {
-              // Implementazione del teletrasporto
               this.teleportToNearestPlatform();
             }
 
@@ -1108,40 +1061,35 @@ if (!this.grounded && !jumpCharging) {  // Aggiunta la condizione !jumpCharging
     pop();
   }
   
-  // Nuova funzione per teletrasportarsi alla piattaforma più vicina
+  // Funzione per teletrasportarsi alla piattaforma più vicina
   teleportToNearestPlatform() {
     let targetPlatform = null;
     
-    // Cerca la prima piattaforma di teletrasporto disponibile che si trova più in alto
     for (let platform of platforms) {
       if (platform !== this.lastPlatform && 
           platform.type === platformTypes.TELEPORT && 
           platform.visible &&
-          platform.y < this.lastPlatform.y) {  // Verifica che la piattaforma sia più in alto
+          platform.y < this.lastPlatform.y) {
         
         targetPlatform = platform;
-        break;  // Prendi la prima disponibile e interrompi la ricerca
+        break;
       }
     }
     
-    // Se abbiamo trovato una piattaforma di teletrasporto sopra
     if (targetPlatform) {
-      // Teletrasporta il giocatore
       this.x = targetPlatform.x + (targetPlatform.width - this.width) / 2;
       this.y = targetPlatform.y - this.height;
       
-      // Trasforma la piattaforma di destinazione in una normale dopo l'uso
       targetPlatform.type = platformTypes.NORMAL;
       
-      // Imposta il cooldown per evitare teletrasporti in rapida successione
-      this.teleportCooldown = 60; // 1 secondo di cooldown
+      this.teleportCooldown = 60;
       
-      // Aggiorna lo stato di animazione
       this.updateAnimationState("jump");
     }
   }
 }
 
+// Classe Platform
 class Platform {
   constructor(x, y, width, height, type) {
     this.x = x;
@@ -1175,7 +1123,6 @@ class Platform {
 
   startDisappearing() {
     if (this.type === platformTypes.TEMPORARY && this.disappearTimer === 0 && this.reappearTimer === 0) {
-      // Aumentato il timer a 5 secondi (300 frames a 60 fps)
       this.disappearTimer = 180;
     }
   }
@@ -1199,20 +1146,17 @@ class Platform {
         platformImage = platformTeleport;
         break;
       case platformTypes.FINAL:
-          platformImage = platformFinal; // Usa l'immagine dedicata
+          platformImage = platformFinal;
         break;
     }
     
-    // Se la piattaforma sta per scomparire, aggiungi un effetto di trasparenza
     if (this.type === platformTypes.TEMPORARY && this.disappearTimer > 0) {
-      tint(255, map(this.disappearTimer, 0, 300, 50, 255)); // Aggiornato per 5 secondi
+      tint(255, map(this.disappearTimer, 0, 300, 50, 255));
     }
 
-    // Disegna l'immagine della piattaforma (stretch per adattarla alle dimensioni)
     image(platformImage, this.x, this.y, this.width, this.height);
 
     if (this.type === platformTypes.FINAL) {
-      // Disegna il trofeo centralmente sulla piattaforma finale
       let trophySize = 80;
       image(trophyImage, 
             this.x + (this.width - trophySize) / 2, 
@@ -1221,7 +1165,6 @@ class Platform {
             trophySize);
     }
         
-    // Resetta il tint
     noTint();
   }
 }
