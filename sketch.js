@@ -1164,7 +1164,5 @@ class Platform {
             trophySize, 
             trophySize);
     }
-        
-    noTint();
   }
 }
