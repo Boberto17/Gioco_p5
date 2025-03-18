@@ -77,7 +77,7 @@ function preload() {
 
 // Funzione di setup per inizializzare il gioco
 function setup() {
-  createCanvas(1200, 800); // Crea una finestra di gioco più grande
+  createCanvas(1200, 800); 
   textFont('Arial');
   lastBackgroundChange = millis();
   prepareGame();
@@ -390,7 +390,7 @@ function drawGameplay() {
     // Disegna un'indicazione visiva per il trofeo
     let indicatorY = 90;
     
-    fill(255, 215, 0);  // Colore oro
+    fill(255, 215, 0); 
     textAlign(CENTER);
     textSize(24);
     
@@ -1014,21 +1014,6 @@ class Player {
       this.y + this.height > platform.y &&
       this.y < platform.y + platform.height &&
       platform.visible
-    );
-  }
-
-  collidesWithTrophy(platform) {
-    if (platform.type !== platformTypes.FINAL) return false;
-    
-    let trophyX = platform.x + (platform.width - 80) / 2;
-    let trophyY = platform.y - 80 - 10;
-    let trophySize = 80;
-    
-    return (
-      this.x + this.width/2 > trophyX && 
-      this.x + this.width/2 < trophyX + trophySize &&
-      this.y < trophyY + trophySize &&
-      this.y + this.height > trophyY
     );
   }
 
